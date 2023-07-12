@@ -1,13 +1,11 @@
-package com.msc.kaapatch.service.impl;
+package com.msc.kaapatch.service;
 
-import com.msc.kaapatch.dao.entity.BloodSugarMonitor;
 import com.msc.kaapatch.utils.CacheMap;
 import com.msc.kaapatch.utils.KafkaConsumer;
 import com.msc.kaapatch.utils.KafkaProducer;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.Iterator;
 import java.util.Map;

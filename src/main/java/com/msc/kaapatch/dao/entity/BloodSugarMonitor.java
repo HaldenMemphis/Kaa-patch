@@ -1,8 +1,9 @@
 package com.msc.kaapatch.dao.entity;
 
+import com.alibaba.fastjson2.JSON;
 import lombok.*;
+
 import java.util.UUID;
-import com.alibaba.fastjson2.*;
 
 
 /**
