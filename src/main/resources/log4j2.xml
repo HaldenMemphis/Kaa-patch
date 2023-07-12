@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2021. FiberHome Telecommunication Technologies Co., Ltd.
+  ~ All Rights Reserved.
+  -->
+
+<configuration status="warn" monitorInterval="300">
+    <!--变量配置-->
+    <Properties>
+        <property name="LOG_PATTERN" value="%d{yyyy.MM.dd HH:mm:ss.SSS} %-5level [%t] %class{0}.%M:%L  - %msg%xEx%n"/>
+        <!-- 定义日志存储的路径 -->
+        <property name="FILE_PATH" value="/home/log/kaapatch/"/>
+        <property name="FILE_NAME" value="kaapatch"/>
+    </Properties>
+
+    <appenders>
+
+         <console name="Console" target="SYSTEM_OUT">
+<!--            输出日志的格式-->
+             <PatternLayout pattern="%yellow{%d{HH:mm:ss.SSS}} %highlight{%-5level} %blue{[%t]} %green{%class{0}.%M:%L} - %cyan{%msg%xEx%n}"/>
+<!--            控制台只输出level及其以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+             <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+         </console>
+
+        <!-- 这个会打印出所有的debug及以上级别的信息，每天的日志会自动存入按年份建立的文件夹下面并进行压缩，作为存档-->
+        <!-- <RollingRandomAccessFile name="Debug" fileName="${FILE_PATH}/${FILE_NAME}-debug.log"
+                                 filePattern="${FILE_PATH}/${date:yyyy}/${FILE_NAME}-debug-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Filters>
+                <ThresholdFilter level="debug" onMatch="NEUTRAL" onMismatch="DENY"/>
+                <ThresholdFilter level="info" onMatch="DENY" onMismatch="ACCEPT"/>
+            </Filters>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies> -->
+            <!-- 保留3天的日志 -->
+            <!-- <DefaultRolloverStrategy>
+                <Delete basePath="${FILE_PATH}" maxDepth="2">
+                    <IfFileName glob="*/${FILE_NAME}-debug-*.log.gz"/>
+                    <IfLastModified age="3d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>  -->
+
+        <!-- 这个会打印出所有的info及以上级别的信息，每天的日志会自动存入按年份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingRandomAccessFile name="Log" fileName="${FILE_PATH}/${FILE_NAME}-info.log"
+                                 filePattern="${FILE_PATH}/${date:yyyy}/${FILE_NAME}-info-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <!-- 保留30天的日志 -->
+            <DefaultRolloverStrategy>
+                <Delete basePath="${FILE_PATH}" maxDepth="2">
+                    <IfFileName glob="*/${FILE_NAME}-info-*.log.gz"/>
+                    <IfLastModified age="30d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <!-- 这个会打印出所有的error及以上级别的信息，每天的日志会自动存入按年份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="Error" fileName="${FILE_PATH}/${FILE_NAME}-error.log"
+                     filePattern="${FILE_PATH}/${date:yyyy}/${FILE_NAME}-error-%d{yyyy-MM-dd}-%i.log.gz">
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${FILE_PATH}" maxDepth="2">
+                    <IfFileName glob="*/${FILE_NAME}-error-*.log.gz"/>
+                    <IfLastModified age="30d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+    </appenders>
+
+    <!--Logger节点用来单独指定日志的形式，比如要为指定包下的class指定不同的日志级别等。-->
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->
+    <loggers>
+        <logger name="org.springframework" level="INFO"></logger>
+        <logger name="org.hibernate" level="ERROR"></logger>
+        <logger name="org.apache.kafka" level="info"/>
+        <logger name="com.zaxxer.hikari" level="info"/>
+        <logger name="io.netty" level="info"/>
+        <logger name="org.apache.shiro" level="info"/>
+        <logger name="org.quartz" level="info"/>
+        <logger name="org.apache.kafka" level="info"/>
+
+        <!--异步打印日志的范围，需要引入异步依赖-->
+        <AsyncLogger name="com.fiberhome" level="INFO" additivity="false" includeLocation="true" >
+            <!-- <appender-ref ref="Console"/> -->
+            <!--关闭debug级别日志打印-->
+            <!--<appender-ref ref="Debug"/>-->
+            <appender-ref ref="Log"/>
+            <appender-ref ref="Error"/>
+        </AsyncLogger>
+
+        <root level="info">
+            <!-- <appender-ref ref="Console"/> -->
+            <appender-ref ref="Log"/>
+            <appender-ref ref="Error"/>
+        </root>
+    </loggers>
+</configuration>
