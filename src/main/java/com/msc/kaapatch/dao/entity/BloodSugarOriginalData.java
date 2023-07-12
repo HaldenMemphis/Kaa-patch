@@ -28,9 +28,9 @@ public class BloodSugarOriginalData {
     public BloodSugarOriginalData(String json) {
         JSONObject jsonObject = JSON.parseObject(json);
         JSONObject data = jsonObject.getJSONObject("event");
-        this.mac = data.getString("mac");
+        this.mac = data.getString("Mac");
         this.sourceIP = data.getString("sourceIP");
-        this.timestamp = data.getLong("timestamp");
+        this.timestamp = data.getLong("timeStamp");
         this.bloodSugar = data.getFloat("bloodSugar");
     }
 
