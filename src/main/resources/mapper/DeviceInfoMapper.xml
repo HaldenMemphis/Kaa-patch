@@ -1,0 +1,38 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.msc.kaapatch.dao.mapper.DeviceInfoMapper">
+
+
+    <!--    <update id="updateByMac" parameterType="com.fiberhome.fiot.engine.kaapatch.dao.entity.DeviceInitInfo">-->
+    <!--        UPDATE device_init_info-->
+    <!--        <set>-->
+    <!--            <if test="status != null">-->
+    <!--                status = #{status},-->
+    <!--            </if>-->
+    <!--            <if test="timeoutInterval != null">-->
+    <!--                timeout_interval = #{timeoutInterval}-->
+    <!--            </if>-->
+    <!--        </set>-->
+    <!--        WHERE mac=#{mac};-->
+    <!--    </update>-->
+
+    <select id="selectAllMac" resultType="java.lang.String">
+        SELECT device.device_info.mac as mac
+        FROM device.device_info;
+    </select>
+
+    <insert id="registerDevice" parameterType="com.msc.kaapatch.dao.entity.DeviceInfoData">
+        INSERT INTO device.device_info (id, mac, display_name, device_type)
+        VALUES (DEFAULT, #{mac},
+        <if test="displayName != null">
+            #{displayName},
+        </if>
+        <if test="deviceType != null">
+            #{deviceType}
+        </if>
+        )
+    </insert>
+
+</mapper>

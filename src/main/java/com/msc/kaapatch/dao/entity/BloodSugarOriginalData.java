@@ -25,6 +25,10 @@ public class BloodSugarOriginalData {
 
     private float bloodSugar;
 
+    private String DeviceType;
+
+    private String DisplayName;
+
     public BloodSugarOriginalData(String json) {
         JSONObject jsonObject = JSON.parseObject(json);
         JSONObject data = jsonObject.getJSONObject("event");
@@ -32,6 +36,8 @@ public class BloodSugarOriginalData {
         this.sourceIP = data.getString("sourceIP");
         this.timestamp = data.getLong("timeStamp");
         this.bloodSugar = data.getFloat("bloodSugar");
+        this.DeviceType = data.getString("deviceType");
+        this.DisplayName = data.getString("deviceName");
     }
 
 }
