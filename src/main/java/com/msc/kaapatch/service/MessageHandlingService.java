@@ -57,7 +57,7 @@ public class MessageHandlingService {
             while (true) {
                 try {
                     Thread.sleep(1L);
-                    bloodSugarKafkaSend(kafkaConsumer.getBloodSugarCacheMap());
+                    KafkaSend(kafkaConsumer.getBloodSugarCacheMap());
                 } catch (Exception e) {
                     log.info(e.getMessage());
                 }
@@ -83,7 +83,7 @@ public class MessageHandlingService {
     }
 
 
-    private void bloodSugarKafkaSend(CacheMap bloodSugarCacheMap) {
+    private void KafkaSend(CacheMap bloodSugarCacheMap) {
 
         // The map write does not force locking, and new data may be inserted during processing to ensure that all data in the map is processed each time.
         for (int size = bloodSugarCacheMap.getCatchMap().size(); size > 0; size = bloodSugarCacheMap.getCatchMap().size()) {
