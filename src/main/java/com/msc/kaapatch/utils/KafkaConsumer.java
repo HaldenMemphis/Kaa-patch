@@ -32,7 +32,7 @@ public class KafkaConsumer {
     //Receive the message from Kafka, and convert it to BloodSugarOriginalData. Put it in to map and wait for processes.
     @KafkaListener(topics = "${kafka.bds.receive.topic}")
     public void bloodSugarMonitorConsumer(String message) {
-//        log.info("BloodSugarMonitorConsumer:{} ", message);
+        log.info("BloodSugarMonitorConsumer:{} ", message);
         BloodSugarOriginalData bloodSugarOriginalData = new BloodSugarOriginalData(message);
         if (null == bloodSugarOriginalData || StringUtils.isBlank(bloodSugarOriginalData.getMac())) {
             return;
