@@ -1,6 +1,5 @@
 package com.msc.kaapatch.service;
 
-import com.msc.kaapatch.dao.entity.BloodSugarMonitor;
 import com.msc.kaapatch.dao.entity.BloodSugarOriginalData;
 import com.msc.kaapatch.dao.entity.DeviceInfoData;
 import com.msc.kaapatch.dao.mapper.DeviceInfoMapper;
@@ -8,14 +7,11 @@ import com.msc.kaapatch.utils.CacheMap;
 import com.msc.kaapatch.utils.KafkaConsumer;
 import com.msc.kaapatch.utils.KafkaProducer;
 import lombok.extern.log4j.Log4j2;
-import org.apache.ibatis.cursor.Cursor;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
+import javax.annotation.PostConstruct;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -45,16 +41,19 @@ public class MessageHandlingService {
     private SqlSessionFactory sqlSessionFactory;
 
     @Autowired
-    private DeviceInfoMapper deviceInfoMapper;
+    private  DeviceInfoMapper deviceInfoMapper;
 
+    private volatile boolean startConsumerFlag = false;
 
 
     public MessageHandlingService(SqlSessionFactory sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
-        initDeviceInfo();
         this.executorEventHandlerService = Executors.newSingleThreadExecutor();
         executorEventHandlerService.execute(() -> {
             while (true) {
+                if (!startConsumerFlag) {
+                    continue;
+                }
                 try {
                     Thread.sleep(1L);
                     KafkaSend(kafkaConsumer.getBloodSugarCacheMap());
@@ -63,10 +62,10 @@ public class MessageHandlingService {
                 }
             }
         });
-
     }
 
-    public void initDeviceInfo(){
+    @PostConstruct
+    public void initDeviceInfo() {
         log.info("DeviceStatusService runner beginning...");
         // Queries out all devices mac address
         try {
@@ -76,6 +75,7 @@ public class MessageHandlingService {
             } else {
                 init.forEach(mac -> registerDeviceCacheMap.put(mac, mac));
             }
+            startConsumerFlag = true;
             log.info("init size {},DeviceStatusService runner completed...");
         } catch (Exception e) {
             log.info(e);

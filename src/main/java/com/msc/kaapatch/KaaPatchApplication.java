@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @MapperScan("com.msc.kaapatch.dao.mapper")
 public class KaaPatchApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(KaaPatchApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(KaaPatchApplication.class, args);
+    }
 
 }
